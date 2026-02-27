@@ -1,0 +1,36 @@
+services:
+  postgres:
+    image: postgres:16
+    environment:
+      POSTGRES_DB: event_monitoring
+      POSTGRES_USER: postgres
+      POSTGRES_PASSWORD: postgres
+    ports:
+      - "5432:5432"
+    volumes:
+      - pgdata:/var/lib/postgresql/data
+
+  python-api:
+    build:
+      context: .
+      dockerfile: docker/python-api.Dockerfile
+    environment:
+      EMS_DATABASE_URL: postgresql+psycopg2://postgres:postgres@postgres:5432/event_monitoring
+      EMS_INTERNAL_INGEST_TOKEN: local-token
+    depends_on:
+      - postgres
+    ports:
+      - "8000:8000"
+
+  cpp-core:
+    build:
+      context: .
+      dockerfile: docker/cpp-core.Dockerfile
+    environment:
+      INGEST_API_URL: http://python-api:8000/internal/events
+      INGEST_TOKEN: local-token
+    depends_on:
+      - python-api
+
+volumes:
+  pgdata:

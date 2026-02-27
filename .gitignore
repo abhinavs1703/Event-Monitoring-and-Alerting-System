@@ -1,0 +1,7 @@
+__pycache__/
+.pytest_cache/
+*.pyc
+cpp-core/build/
+python-api/.coverage
+python-api/htmlcov/
+.env

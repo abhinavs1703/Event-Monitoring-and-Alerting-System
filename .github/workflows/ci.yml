@@ -1,0 +1,37 @@
+name: CI
+
+on:
+  push:
+  pull_request:
+
+jobs:
+  cpp-core:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - name: Install deps
+        run: sudo apt-get update && sudo apt-get install -y cmake g++ libcurl4-openssl-dev
+      - name: Build and test C++ core
+        run: |
+          cmake -S cpp-core -B cpp-core/build
+          cmake --build cpp-core/build -j
+          ctest --test-dir cpp-core/build --output-on-failure
+
+  python-api:
+    runs-on: ubuntu-latest
+    defaults:
+      run:
+        working-directory: python-api
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-python@v5
+        with:
+          python-version: '3.11'
+      - name: Install dependencies
+        run: pip install -r requirements.txt
+      - name: Lint
+        run: python -m compileall app
+      - name: Tests
+        env:
+          EMS_DATABASE_URL: sqlite+pysqlite:///:memory:
+        run: pytest --cov=app --cov-report=term-missing
