@@ -34,7 +34,7 @@ class AlertIncidentOut(BaseModel):
     rule_id: UUID
     severity: str
     summary: str
-    metadata: dict
+    incident_metadata: dict = Field(serialization_alias="metadata")
     triggered_at: datetime
 
     class Config:
