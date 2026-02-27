@@ -32,7 +32,7 @@ class AlertEngine:
                     rule_id=rule.id,
                     severity=rule.severity,
                     summary=f"Rule {rule.name} triggered for {event.event_type}",
-                    metadata={"observed_count": count, "window_seconds": rule.window_seconds},
+                    incident_metadata={"observed_count": count, "window_seconds": rule.window_seconds},
                 )
                 db.add(incident)
                 incidents.append(incident)
