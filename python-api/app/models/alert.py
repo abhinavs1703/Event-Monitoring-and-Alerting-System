@@ -27,5 +27,5 @@ class AlertIncident(Base):
     rule_id: Mapped[uuid.UUID] = mapped_column(UUID(as_uuid=True), index=True, nullable=False)
     severity: Mapped[str] = mapped_column(String(32), nullable=False)
     summary: Mapped[str] = mapped_column(String(255), nullable=False)
-    metadata: Mapped[dict] = mapped_column(JSONB, nullable=False, default=dict)
+    incident_metadata: Mapped[dict] = mapped_column("metadata", JSONB, nullable=False, default=dict)
     triggered_at: Mapped[DateTime] = mapped_column(DateTime(timezone=True), server_default=func.now())
